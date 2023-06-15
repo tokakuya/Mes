@@ -1,10 +1,13 @@
-﻿namespace Mes.core;
+﻿using System.Runtime.CompilerServices;
+
+namespace Mes.Core;
 
 
 public interface ICountDialogueWords
 {
     public Dictionary<string, int> CountDialogueWithCharactor(char[] ignore_char);
     public Dictionary<string, int> CountDialogueWithCharactor();
+    
 }
 
 //拡張メソッドd

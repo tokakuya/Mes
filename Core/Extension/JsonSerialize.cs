@@ -2,12 +2,14 @@ using System.Text.Encodings.Web;
 using System.Text.Json;
 using System.Text.Unicode;
 
-namespace Mes.core;
+namespace Mes.Core;
+
 
 public interface IJsonSerialize
 {
-    public string ToJson();
+    public string ToJson() => JsonSerialize.ToJson<IJsonSerialize>(this, WriteIndented: false);
 }
+
 
 public static class JsonSerialize
 {
@@ -19,4 +21,5 @@ public static class JsonSerialize
         };
         return JsonSerializer.Serialize<T>(thisObj, options);
     }
+    
 }

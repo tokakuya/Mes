@@ -1,6 +1,6 @@
 ﻿namespace Mes;
 
-using Mes.core;
+using Mes.Core;
 using System.Text.Json.Serialization;
 
 public record MesConfig

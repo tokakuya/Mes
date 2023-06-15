@@ -1,14 +1,22 @@
-﻿using System.Text.Encodings.Web;
+﻿using Mes.core.Extension;
+using System.Text.Encodings.Web;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 
 using System.Text.RegularExpressions;
 using System.Text.Unicode;
 
-namespace Mes.core;
+namespace Mes.Core;
 
 public class Mes
     :ICountDialogueWords
+    ,IExportDaihonText
+    ,IJsonSerialize
+    ,IExportMesText
+    ,IExportCSV
+    ,IChatStyleExtention
+    ,IGameBookExtention
+
 {
     public MesHeader header{get; set;}
     public MesBody body{get; set;}

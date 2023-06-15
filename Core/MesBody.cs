@@ -1,7 +1,7 @@
-namespace Mes.core;
 using System.Linq;
 using System.Text.RegularExpressions;
 
+namespace Mes.Core;
 
 public record MesBody
     :ICountDialogueWords

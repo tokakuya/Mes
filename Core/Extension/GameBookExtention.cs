@@ -3,11 +3,14 @@ using System.Text;
 using System.Text.RegularExpressions;
 using System.Text.Json.Serialization;
 
-namespace Mes.Extension;
+namespace Mes.Core;
+
+
+
 
 public static class SelecterRegex
 {
-    static internal Regex regChoose = new Regex("choose:.*?,",RegexOptions.Compiled);
+    static internal Regex regChoose = new Regex("choose:.*?,", RegexOptions.Compiled);
     static internal Regex regJump = new Regex("jump:.*?,", RegexOptions.Compiled);
 }
 
@@ -28,7 +31,7 @@ public class BranchNode
         public Select(string extFieldText)
         {
             extFieldText = extFieldText.Trim();
-            value = SelecterRegex.regChoose.Match(extFieldText).Value.Replace("choose:","").Replace(",","").Trim();
+            value = SelecterRegex.regChoose.Match(extFieldText).Value.Replace("choose:", "").Replace(",", "").Trim();
             jump = SelecterRegex.regJump.Match(extFieldText).Value.Replace("jump:", "").Replace(",", "").Trim();
         }
         public Select() { }
@@ -40,6 +43,14 @@ public class BranchNode
     }
 }
 
+
+public interface IGameBookExtention
+{
+    public MesBody body { get; set; }
+    public IEnumerable<BranchNode> GetBranchNodes(IGameBookExtention mes) => GameBookExtention.GetBranchNodes(mes);
+
+}
+
 public static class GameBookExtention
 {
 
@@ -48,7 +59,7 @@ public static class GameBookExtention
         return new BranchNode[] { };
     }
 
-    public static IEnumerable<BranchNode> GetBranchNodes(this Mes.core.Mes mes)
+    public static IEnumerable<BranchNode> GetBranchNodes(this IGameBookExtention mes)
     {
         var regJump = new Regex("jump:.*?,", RegexOptions.Compiled);
         var regChoose = new Regex("choose:.*?,", RegexOptions.Compiled);
@@ -60,10 +71,10 @@ public static class GameBookExtention
                     .Where(ex => regJump.IsMatch(ex) || regChoose.IsMatch(ex))
                     .Select(ex => new BranchNode.Select(ex))
                     .ToArray();
-            yield return new BranchNode(section.name, SelectList);            
+            yield return new BranchNode(section.name, SelectList);
         }
     }
-    public static string ExportMermaid(this Mes.core.Mes mes)
+    public static string ExportMermaid(this IGameBookExtention mes)
     {
         var branches = mes.GetBranchNodes();
         StringBuilder result = new StringBuilder();
@@ -85,7 +96,7 @@ public static class GameBookExtention
         }
         return result.ToString();
     }
-    public static string ExportPlantUML(this Mes.core.Mes mes)
+    public static string ExportPlantUML(this IGameBookExtention mes)
     {
         var branches = mes.GetBranchNodes();
         StringBuilder result = new StringBuilder();

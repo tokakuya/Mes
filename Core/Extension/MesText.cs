@@ -4,11 +4,19 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Mes.core;
+namespace Mes.Core;
+
+public interface IExportMesText {
+
+    public MesHeader header { get; set; }
+    public MesBody body { get; set; }
+    public string ExportMesText(MesConfig config) => MesTextExtention.ExportMesText(this, config);
+
+}
 
 public static class MesTextExtention
 {
-    public static string ExportMesText(this Mes mes, MesConfig config)
+    public static string ExportMesText(this IExportMesText mes, MesConfig config)
     {
         StringBuilder result = new StringBuilder();
 
@@ -41,5 +49,6 @@ public static class MesTextExtention
         }
         return result.ToString();
     }
+
 
 }

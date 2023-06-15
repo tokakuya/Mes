@@ -1,4 +1,4 @@
-namespace Mes.core;
+namespace Mes.Core;
 
 using System.Runtime.CompilerServices;
 using System.Text.Json;

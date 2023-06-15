@@ -1,7 +1,7 @@
 using System.Text.RegularExpressions;
 using System.Xml.Linq;
 
-namespace Mes.core;
+namespace Mes.Core;
 
 
 public class MesHeader

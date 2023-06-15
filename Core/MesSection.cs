@@ -1,4 +1,4 @@
-﻿namespace Mes.core;
+﻿namespace Mes.Core;
 using System.Linq;
 
 public record MesSection

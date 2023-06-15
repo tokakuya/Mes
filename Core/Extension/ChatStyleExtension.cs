@@ -4,16 +4,24 @@ using System.Text;
 using System.Security.Cryptography;
 
 
-namespace Mes.Extension;
+namespace Mes.Core.Extension;
+
+public interface IChatStyleExtention
+{
+    public IEnumerable<MesPiece> GetMesPieces();
+    public IEnumerable<string> ToChatStyleHTML() => ChatStyleExtension.ToChatStyleHTML(this, ChatStyleExtension.DefaultTemplate)
+
+    public IEnumerable<string> ToChatStyleHTML(Func<MesPiece, string> TextTemplate) => ChatStyleExtension.ToChatStyleHTML(this, TextTemplate);
+}
 
 public static class ChatStyleExtension
 {
-    public static IEnumerable<string> ToChatStyleHTML(this Mes.core.Mes mes)
+    public static IEnumerable<string> ToChatStyleHTML(this IChatStyleExtention mes)
     {
-        return ToChatStyleHTML(mes, DefaultTemplate);
+        return mes.ToChatStyleHTML(DefaultTemplate);
     }
 
-    public static IEnumerable<string> ToChatStyleHTML(this Mes.core.Mes mes, Func<MesPiece, string>TextTemplate)
+    public static IEnumerable<string> ToChatStyleHTML(this IChatStyleExtention mes, Func<MesPiece, string> TextTemplate)
     {
         foreach (var piece in mes.GetMesPieces())
         {
@@ -21,7 +29,7 @@ public static class ChatStyleExtension
         }
     }
 
-    private static string DefaultTemplate(MesPiece piece)
+    internal static string DefaultTemplate(MesPiece piece)
     {
         return $"<span style=\"color: #{CharactorNameToColorCode(piece.charactor)}\">{piece.charactor}:</span>{piece.dialogue}";
     }
