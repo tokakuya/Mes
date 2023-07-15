@@ -1,0 +1,25 @@
+@startuml Mes
+
+namespace Mes{
+
+
+    class MesBuilder{
+        + MesConfig MesConfig
+        + string RawText
+
+        + MesBuilder SetRawText(string text)
+        + MesBuilder SetRawText(Func<string,string> flatter)
+        + MesBuilder SetMesConfig(MesConfig mesConfig)
+
+    }
+
+    class MesConfig{
+        
+    }
+}
+
+namespace Mes.Core{
+
+}
+
+@enduml

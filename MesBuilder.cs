@@ -7,12 +7,18 @@ using System.Text.Json.Nodes;
 using System.Text.Json.Serialization;
 using System.Text.RegularExpressions;
 
+public interface IFlatter
+{
+    public MesBuilder DoFlat(MesBuilder builder);
+}
+
+
 /// <summary>
 /// Builderをユーザが拡張したい場合は拡張メソッドで加工してください
 /// </summary>
 public class MesBuilder
 {
-    public MesConfig MesConfig;
+    internal MesConfig MesConfig;
     public string RawText = "";
 
     /* セッター */
@@ -28,18 +34,18 @@ public class MesBuilder
         return this;
     }
 
-    public MesBuilder SetMesConfig(MesConfig mesConfig)
+    public MesBuilder SetMesConfig(MesConfig config)
     {
-        this.MesConfig = mesConfig;
+        this.MesConfig = config;
         return this;
     }
 
     /* コンストラクター */
     public MesBuilder(string rawText): this(rawText, new MesConfig()){}
-    public MesBuilder(string rawText, MesConfig conf)
+    public MesBuilder(string rawText, MesConfig config)
     {
         SetRawText(rawText);
-        this.MesConfig = conf;
+        this.MesConfig = config;
     }
     public Mes Build(bool skipDoFlat = false)
     {

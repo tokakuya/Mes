@@ -2,6 +2,7 @@
 using System.Linq;
 
 public record MesSection
+    :IJsonSerialize
 {
     public string name{get; set;} = "";
     public MesPiece[] pieces{get; set;}

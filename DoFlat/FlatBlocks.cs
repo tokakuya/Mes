@@ -17,11 +17,11 @@ public static class FlatBlocksExtension
 
     private static string DoFlat_Block(string mesText)
     {
-        var rx_args = new Regex("\\(.*?\\)", RegexOptions.Multiline | RegexOptions.Compiled);
-        var rx_lines = new Regex("{{(.|\n)*}}", RegexOptions.Multiline | RegexOptions.Compiled);
+        var rx_args = new Regex(@"\((?<args>.*?)\)", RegexOptions.Multiline | RegexOptions.Compiled);
+        var rx_lines = new Regex("{{(?<line>(.|\n)*)}}", RegexOptions.Multiline | RegexOptions.Compiled);
 
-        var args = rx_args.Match(mesText).Value.Replace("(", "").Replace(")", "");
-        var lines = rx_lines.Match(mesText).Value.Replace("{{", "").Replace("}}", "");
+        var args = rx_args.Match(mesText).Groups["args"].Value; //.Value.Replace("(", "").Replace(")", "");
+        var lines = rx_lines.Match(mesText).Groups["line"].Value; //.Value.Replace("{{", "").Replace("}}", "");
 
         var li = lines.Split(Environment.NewLine + Environment.NewLine).Select((line) =>
         {

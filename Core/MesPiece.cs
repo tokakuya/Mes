@@ -62,6 +62,7 @@ public static class MesPiecePropertyExtention
 
 
 public record MesPiece
+    :IJsonSerialize
 {
     [JsonInclude]
     public string dialogue;
@@ -147,7 +148,7 @@ public record MesPiece
         this.timing = String.Join("\n", timing);
     }
 
-    private void setAttr(string line, char[] prefixList, ref List<string> target)
+    private void setAttr(string line, IReadOnlyCollection<char> prefixList, ref List<string> target)
     {
         if (prefixList.Any(prefix => prefix == line[0]))
         {
@@ -155,7 +156,7 @@ public record MesPiece
             target.Add(line.Remove(0,1));
         }
     }
-    private void setAttr2(string line, char[] prefixList, ref string target)
+    private void setAttr2(string line, IReadOnlyCollection<char> prefixList, ref string target)
     {
         if (prefixList.Any(prefix => prefix == line[0]))
         {

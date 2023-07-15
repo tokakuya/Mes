@@ -1,4 +1,4 @@
-﻿using Mes.core;
+﻿using Mes.Core;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -12,15 +12,15 @@ internal static class CommonScenario
 {
     internal static Dictionary<string, Regex> regList = new Dictionary<string, Regex>
     {
-        { "()", new Regex("^(\\(|）).*(\\)|）)") },
-        { "【】", new Regex("^【.*】") },
-        { "○", new Regex("^○.*") }, //これ使わないかも
+        { "()", new Regex(@"^(\(|）)(?<args>.*)(\)|）)") },
+        { "【】", new Regex(@"^【(?<args>.*)】") },
+        { "○", new Regex(@"^○(?<args>.*)") }, //これ使わないかも
     };
 
     internal static Dictionary<string, Regex> replaceRegList = new Dictionary<string, Regex>
     {
-        { "()", new Regex("(\\(|）|\\)|）)") },
-        { "【】", new Regex("(【|】)") },
+        { "()", new Regex(@"(\(|（|\)|）)") },
+        { "【】", new Regex(@"(【|】)") },
         { "○", new Regex("○") }, //これ使わないかも
     };
 
@@ -56,15 +56,13 @@ public static class FlatCommonScenarioStyleExtention
 
     public static string DoFlat_ParenthesisToComment(this string line)
     {
-        return CommonScenario.regList["()"].Match(line).Success 
-               ? "#" + CommonScenario.replaceRegList["()"].Replace(line, "")
-               : line;
+        var match = CommonScenario.regList["()"].Match(line);
+        return match.Success ? match.Groups["args"].Value : line;
     }
 
     public static string DoFlat_BlackLenticularBracket(this string line)
     {
-        return CommonScenario.regList["【】"].Match(line).Success
-               ? "#" + CommonScenario.replaceRegList["【】"].Replace(line, "")
-               : line;
+        var match = CommonScenario.regList["【】"].Match(line);
+        return match.Success ? match.Groups["args"].Value : line;
     }
 }

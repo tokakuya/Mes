@@ -18,8 +18,8 @@ public static class FlatDialogueExtension
         var conf = builder.MesConfig;
         var lineList = builder.RawText.Split("\n");
         var rx = new Regex($"^.*{conf.flat_dialogue_config.start_str}", RegexOptions.Compiled); //名前「　のマッチング
-        var rxtab = new Regex($"^.*\t", RegexOptions.Compiled); //名前\t　のマッチング
-        var rxsp4 = new Regex($"^.*    ", RegexOptions.Compiled); //スペース4つのマッチング
+        var rxtab = new Regex(@"^(?<name>.*)\t", RegexOptions.Compiled); //名前\t　のマッチング
+        var rxsp4 = new Regex(@"^(?<name>.*)    ", RegexOptions.Compiled); //スペース4つのマッチング
         var result = lineList.Select(line =>
         {
             var nameMatch = rx.Match(line);

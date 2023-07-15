@@ -1,4 +1,4 @@
-using Mes.core;
+using Mes.Core;
 using System.Drawing;
 using System.Text;
 using System.Security.Cryptography;
@@ -9,7 +9,7 @@ namespace Mes.Core.Extension;
 public interface IChatStyleExtention
 {
     public IEnumerable<MesPiece> GetMesPieces();
-    public IEnumerable<string> ToChatStyleHTML() => ChatStyleExtension.ToChatStyleHTML(this, ChatStyleExtension.DefaultTemplate)
+    public IEnumerable<string> ToChatStyleHTML() => ChatStyleExtension.ToChatStyleHTML(this, ChatStyleExtension.DefaultTemplate);
 
     public IEnumerable<string> ToChatStyleHTML(Func<MesPiece, string> TextTemplate) => ChatStyleExtension.ToChatStyleHTML(this, TextTemplate);
 }

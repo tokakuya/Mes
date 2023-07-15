@@ -47,12 +47,12 @@ public class MesHeader
         {
             var varName = (property) switch
             {
-                MesPieceProperty.Charactor => "\\$deco_charactor\\s*=.*",
-                MesPieceProperty.Comments => "\\$deco_comments\\s*=.*",
-                MesPieceProperty.SoundPosition => "\\$deco_sound_position\\s*=.*",
-                MesPieceProperty.SoundNote => "\\$deco_sound_note\\s*=.*",
-                MesPieceProperty.Timing => "\\$deco_timing\\s*=.*",
-                MesPieceProperty.ExtField => "\\$deco_ext_field\\s*=.*",
+                MesPieceProperty.Charactor => @"\$deco_charactor\s*=(?<value>.*)",
+                MesPieceProperty.Comments => @"\$deco_comments\s*=(?<value>.*)",
+                MesPieceProperty.SoundPosition => @"\$deco_sound_position\s*=(?<value>.*)",
+                MesPieceProperty.SoundNote => @"\$deco_sound_note\s*=(?<value>.*)",
+                MesPieceProperty.Timing => @"\$deco_timing\s*=(?<value>.*)",
+                MesPieceProperty.ExtField => @"\$deco_ext_field\s*=(?<value>.*)",
                 _ => ""
             };
             var rx = new Regex(varName, RegexOptions.Compiled);
@@ -60,7 +60,9 @@ public class MesHeader
             if (varNameMatch.Success)
             {
                 //var delstr = Regex.Replace(varNameMatch.Value, "\\$.*=", "");
-                var value = Regex.Replace(varNameMatch.Value, "\\$.*=", "").Replace("(\r|\n)*","").Trim();
+                //var value = Regex.Replace(varNameMatch.Value, "\\$.*=", "").Replace("(\r|\n)*","").Trim();
+                var value = varNameMatch.Groups["value"].Value;
+                
                 System.Console.WriteLine("value:"+value);
                 if(value.Length == 1)//一文字だけの設定しか許可しない
                 {
@@ -105,43 +107,45 @@ public class MesHeader
     {
 
         //NOTE: 本当はヘッダーテキストからの探査を1回でやるほうが処理が早い
-        SetValiable(headerText, ref _conf.dialogue_count_config.ignore_char, new Regex("\\$ignore_char\\s*=.*", RegexOptions.Compiled));
-        SetValiable(headerText, ref _conf.mes_piece_config.decorator.charactor, new Regex("\\$deco_charactor\\s*=.*", RegexOptions.Compiled));
-        SetValiable(headerText, ref _conf.mes_piece_config.decorator.comments, new Regex("\\$deco_comments\\s*=.*", RegexOptions.Compiled));
-        SetValiable(headerText, ref _conf.mes_piece_config.decorator.sound_position, new Regex("\\$deco_sound_position\\s*=.*", RegexOptions.Compiled));
-        SetValiable(headerText, ref _conf.mes_piece_config.decorator.sound_note, new Regex("\\$deco_sound_note\\s*=.*", RegexOptions.Compiled));
-        SetValiable(headerText, ref _conf.mes_piece_config.decorator.timing, new Regex("\\$deco_timing\\s*=.*", RegexOptions.Compiled));
-        SetValiable(headerText, ref _conf.mes_piece_config.decorator.ext_field, new Regex("\\$deco_ext_field\\s*=.*", RegexOptions.Compiled));
-        SetValiable(headerText, ref _conf.mes_piece_config.default_charactor_name, new Regex("\\$default_charactor_name\\s*=.*", RegexOptions.Compiled));
+        SetValiable(headerText, ref _conf.dialogue_count_config.ignore_char, new Regex(@"\$ignore_char\s*=(?<value>.*)", RegexOptions.Compiled));
+        SetValiable(headerText, ref _conf.mes_piece_config.decorator.charactor, new Regex(@"\$deco_charactor\s*=(?<value>.*)", RegexOptions.Compiled));
+        SetValiable(headerText, ref _conf.mes_piece_config.decorator.comments, new Regex(@"\$deco_comments\s*=(?<value>.*)", RegexOptions.Compiled));
+        SetValiable(headerText, ref _conf.mes_piece_config.decorator.sound_position, new Regex(@"\$deco_sound_position\s*=(?<value>.*)", RegexOptions.Compiled));
+        SetValiable(headerText, ref _conf.mes_piece_config.decorator.sound_note, new Regex(@"\$deco_sound_note\s*=(?<value>.*)", RegexOptions.Compiled));
+        SetValiable(headerText, ref _conf.mes_piece_config.decorator.timing, new Regex(@"\$deco_timing\s*=(?<value>.*)", RegexOptions.Compiled));
+        SetValiable(headerText, ref _conf.mes_piece_config.decorator.ext_field, new Regex(@"\$deco_ext_field\s*=(?<value>.*)", RegexOptions.Compiled));
+        SetValiable(headerText, ref _conf.mes_piece_config.default_charactor_name, new Regex(@"\$default_charactor_name\s*=(?<value>.*)", RegexOptions.Compiled));
 
 
         return this;
     }
-    public void SetValiable(string headerText, ref string _confStringRef, Regex varNameReg, string varPattern = "\\$.*=")
+    public void SetValiable(string headerText, ref string _confStringRef, Regex varNameReg, string varPattern = @"\$.*=")
     {
         var (isHit, value) = GetHeaderVariable(headerText, varNameReg, varPattern);
         if (isHit) _confStringRef = value;
     }
 
-    public void SetValiable(string headerText, ref char[] _confCharArrayRef, Regex varNameReg, string varPattern = "\\$.*=")
+    public void SetValiable(string headerText, ref char[] _confCharArrayRef, Regex varNameReg, string varPattern = @"\$.*=")
     {
         var (isHit, value) = GetHeaderVariable(headerText, varNameReg, varPattern);
         if (isHit) _confCharArrayRef = value.ToCharArray().Distinct().ToArray(); //重複を削除してセット
     }
 
-    public (bool, string) GetHeaderVariable(string headerText, Regex varNameReg, string varPattern = "\\$.*=")
+    public (bool, string) GetHeaderVariable(string headerText, Regex varNameReg, string varPattern = @"\$.*=")
     {
         var varNameMatch = varNameReg.Match(headerText);
         if (varNameMatch.Success)
         {
             //TODO:リファクタ
-            var value = Regex.Replace(varNameMatch.Value, varPattern, "").Replace("(\r|\n)*", "").Trim();
+            //var value = Regex.Replace(varNameMatch.Value, varPattern, "").Replace("(\r|\n)*", "").Trim();
+            var value = varNameMatch.Groups["value"].Value.Replace("(\r|\n)*","").Trim();
             return (true, value);
         }
         else return (false, "");
     }
 
 
+    /*
     public string GetDefaultCharactorName(string headerText)
     {
         var rx = new Regex(@"^\$default_name\s*=\s*", RegexOptions.Compiled);
@@ -154,4 +158,5 @@ public class MesHeader
 
         return "";
     }
+    */
 }
